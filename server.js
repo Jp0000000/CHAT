@@ -31,8 +31,6 @@ io.on("connection", (socket) => {
     // Envia a mensagem para todos os outros usuários
     io.emit("receiveMessage", message); // Envia a mensagem para todos os usuários
 
-    // Aqui você pode enviar uma resposta automatizada ao "agente" (bot ou sistema)
-    const botResponse = "Você disse: " + message;
     socket.emit("receiveMessage", botResponse); // Responde para o usuário que enviou
   });
 
