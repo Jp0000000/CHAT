@@ -28,10 +28,11 @@ io.on("connection", (socket) => {
   socket.on("sendMessage", (message) => {
     console.log("Mensagem recebida:", message);
 
-    // Envia a mensagem para todos os outros usuários
-    io.emit("receiveMessage", message); // Envia a mensagem para todos os usuários
-
-    socket.emit("receiveMessage", botResponse); // Responde para o usuário que enviou
+    // Envia a mensagem para todos os outros usuários (exceto quem enviou)
+    io.emit("receiveMessage", {
+      user: socket.id, // Envia o ID do socket para saber de quem é a mensagem
+      message: message,
+    });
   });
 
   socket.on("disconnect", () => {
