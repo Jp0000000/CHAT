@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat - Grupo</title>
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
-    <link rel="stylesheet" href="/index.css" />
+    <link rel="stylesheet" href="/index.css">
   </head>
   <body>
     <div id="chat-container">
@@ -31,11 +31,7 @@
 
       <!-- Campo para digitar a mensagem -->
       <div id="messageInputContainer">
-        <input
-          type="text"
-          id="messageInput"
-          placeholder="Digite sua mensagem..."
-        />
+        <input type="text" id="messageInput" placeholder="Digite sua mensagem..." />
         <button onclick="sendMessage()">Enviar</button>
       </div>
 
@@ -43,20 +39,19 @@
         const socket = io("https://chat-production-6582.up.railway.app");
 
         socket.on("receiveMessage", (message) => {
-          // Não exibir a mensagem se já foi exibida (verifica a mensagem no campo de input)
-          if (message !== document.getElementById("messageInput").value) {
-            const messageElement = document.createElement("p");
+          const messageElement = document.createElement("p");
 
-            if (message.startsWith("Você: ")) {
-              messageElement.textContent = message;
-              messageElement.classList.add("my-message");
-            } else {
-              messageElement.textContent = message;
-              messageElement.classList.add("received-message");
-            }
-
-            document.getElementById("messages").appendChild(messageElement);
+          // Verifica se a mensagem é do próprio usuário
+          if (message.startsWith("Você: ")) {
+            messageElement.textContent = message;
+            messageElement.classList.add("my-message");
+          } else {
+            messageElement.textContent = message;
+            messageElement.classList.add("received-message");
           }
+
+          // Adiciona a mensagem no chat
+          document.getElementById("messages").appendChild(messageElement);
         });
 
         function sendMessage() {
@@ -69,7 +64,7 @@
             messageElement.classList.add("my-message");
             document.getElementById("messages").appendChild(messageElement);
 
-            // Envia a mensagem para o servidor
+            // Envia a mensagem para o servidor (não irá duplicar)
             socket.emit("sendMessage", "Você: " + message);
 
             // Limpa o campo de input
@@ -77,6 +72,5 @@
           }
         }
       </script>
-    </div>
   </body>
 </html>
