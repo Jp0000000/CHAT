@@ -13,17 +13,18 @@
       <div id="contacts-bar">
         <header>Contatos</header>
         <div class="contact-item">
-          <img src="assets/images/marcos.jpg" alt="Contato 1" />
-          <span>Marcos</span>
+          <img src="assets/images/anonimo.jpeg" alt="Contato 1" />
+          <span>Anônimo</span>
         </div>
         <div class="contact-item">
-          <img src="assets/images/marcos.jpg" alt="Contato 2" />
+          <img src="assets/images/anonimo.jpeg" alt="Contato 2" />
           <span>João</span>
         </div>
         <div class="contact-item">
-          <img src="assets/images/marcos.jpg" alt="Contato 3" />
+          <img src="assets/images/anonimo.jpeg" alt="Contato 3" />
           <span>Luana</span>
         </div>
+        <!-- Adicione mais contatos conforme necessário -->
       </div>
 
       <!-- Área de mensagens -->
@@ -38,6 +39,7 @@
       <script>
         const socket = io("https://chat-production-6582.up.railway.app");
 
+        // Recebe a mensagem do servidor e exibe
         socket.on("receiveMessage", (data) => {
           const messageElement = document.createElement("p");
 
@@ -57,14 +59,8 @@
           const message = document.getElementById("messageInput").value;
 
           if (message.trim() !== "") {
-            // Envia a mensagem para o servidor
+            // Envia a mensagem para o servidor, mas não exibe ela localmente
             socket.emit("sendMessage", message);
-
-            // Exibe a mensagem localmente com o prefixo "Você"
-            const messageElement = document.createElement("p");
-            messageElement.textContent = "Você: " + message;
-            messageElement.classList.add("my-message");
-            document.getElementById("messages").appendChild(messageElement);
 
             // Limpa o campo de input
             document.getElementById("messageInput").value = "";
