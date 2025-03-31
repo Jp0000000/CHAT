@@ -14,15 +14,15 @@
         <header>Contatos</header>
         <div class="contact-item">
           <img src="assets/images/marcos.jpg" alt="Contato 1" />
-          <span>Marcos</span>
+          <span>Anônimo</span>
         </div>
         <div class="contact-item">
           <img src="assets/images/marcos.jpg" alt="Contato 2" />
-          <span>João</span>
+          <span>Anônimo</span>
         </div>
         <div class="contact-item">
           <img src="assets/images/marcos.jpg" alt="Contato 3" />
-          <span>Luana</span>
+          <span>Anônimo</span>
         </div>
       </div>
 
@@ -58,14 +58,14 @@
           const message = document.getElementById("messageInput").value;
 
           if (message.trim() !== "") {
-            // Exibe a mensagem localmente com o prefixo antes de enviar
+            // Envia a mensagem para o servidor
+            socket.emit("sendMessage", "Você: " + message);
+
+            // Exibe a mensagem localmente depois que ela for enviada
             const messageElement = document.createElement("p");
             messageElement.textContent = "Você: " + message;
             messageElement.classList.add("my-message");
             document.getElementById("messages").appendChild(messageElement);
-
-            // Envia a mensagem para o servidor (não irá duplicar)
-            socket.emit("sendMessage", "Você: " + message);
 
             // Limpa o campo de input
             document.getElementById("messageInput").value = "";
