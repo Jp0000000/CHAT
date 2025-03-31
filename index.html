@@ -40,7 +40,7 @@
     </div>
 
     <script>
-      const socket = io("http://localhost:3000");
+      const socket = io("https://chat-production-6582.up.railway.app");
 
       socket.on("receiveMessage", (message) => {
         const messageElement = document.createElement("p");
