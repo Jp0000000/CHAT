@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
+const path = require("path"); // Para gerenciar caminhos de arquivos
 
 const app = express();
 const server = http.createServer(app);
@@ -13,6 +14,14 @@ const io = new Server(server, {
 
 app.use(cors());
 
+// Serve os arquivos estáticos (se tiver CSS, JS, etc. na pasta public)
+app.use(express.static(path.join(__dirname, "public")));
+
+// Rota para servir o index.html
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html")); // Ajuste o caminho conforme a estrutura de diretórios
+});
+
 io.on("connection", (socket) => {
   console.log("Novo usuário conectado:", socket.id);
 
@@ -23,7 +32,7 @@ io.on("connection", (socket) => {
     io.emit("receiveMessage", message); // Envia a mensagem para todos os usuários
 
     // Aqui você pode enviar uma resposta automatizada ao "agente" (bot ou sistema)
-    const botResponse = "Olá! Eu sou o agente, você disse: " + message;
+    const botResponse = "Você disse: " + message;
     socket.emit("receiveMessage", botResponse); // Responde para o usuário que enviou
   });
 
@@ -32,6 +41,7 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log("Servidor rodando na porta 3000 🚀");
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT} 🚀`);
 });
