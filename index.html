@@ -14,15 +14,15 @@
         <header>Contatos</header>
         <div class="contact-item">
           <img src="assets/images/marcos.jpg" alt="Contato 1" />
-          <span>Anônimo</span>
+          <span>Marcos</span>
         </div>
         <div class="contact-item">
           <img src="assets/images/marcos.jpg" alt="Contato 2" />
-          <span>Anônimo</span>
+          <span>João</span>
         </div>
         <div class="contact-item">
           <img src="assets/images/marcos.jpg" alt="Contato 3" />
-          <span>Anônimo</span>
+          <span>Luana</span>
         </div>
       </div>
 
@@ -41,31 +41,25 @@
         socket.on("receiveMessage", (message) => {
           const messageElement = document.createElement("p");
 
-          // Verifica se a mensagem é do próprio usuário
-          if (message.startsWith("Você: ")) {
-            messageElement.textContent = message;
-            messageElement.classList.add("my-message");
-          } else {
-            messageElement.textContent = message;
-            messageElement.classList.add("received-message");
-          }
+          // Exibe a mensagem de outras pessoas como "Anônimo: [mensagem]"
+          messageElement.textContent = message;
+          messageElement.classList.add("received-message");
 
-          // Adiciona a mensagem no chat
           document.getElementById("messages").appendChild(messageElement);
         });
 
         function sendMessage() {
           const message = document.getElementById("messageInput").value;
-
+          
           if (message.trim() !== "") {
-            // Envia a mensagem para o servidor
-            socket.emit("sendMessage", "Você: " + message);
-
-            // Exibe a mensagem localmente depois que ela for enviada
+            // Exibe a mensagem localmente com "Você: [mensagem]" antes de enviar
             const messageElement = document.createElement("p");
             messageElement.textContent = "Você: " + message;
             messageElement.classList.add("my-message");
             document.getElementById("messages").appendChild(messageElement);
+
+            // Envia a mensagem para o servidor, identificando o remetente como "Anônimo"
+            socket.emit("sendMessage", "Anônimo: " + message);
 
             // Limpa o campo de input
             document.getElementById("messageInput").value = "";
