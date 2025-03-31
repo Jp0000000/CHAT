@@ -3,56 +3,81 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CHAT EM TESTE</title>
+    <title>Chat - Grupo</title>
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-      }
-      #chat {
-        width: 300px;
-        margin: 20px auto;
-        border: 1px solid #ccc;
-        padding: 10px;
-      }
-      #messages {
-        height: 200px;
-        overflow-y: scroll;
-        border-bottom: 1px solid #ccc;
-        margin-bottom: 10px;
-      }
-      input {
-        width: 80%;
-        padding: 5px;
-      }
-      button {
-        padding: 5px;
-      }
-    </style>
+    <link rel="stylesheet" href="CSS/index.css" />
   </head>
   <body>
-    <h1>Chat em Tempo Real *TESTE*</h1>
-    <div>
-      <div id="messages"></div>
-      <input type="text" id="messageInput" placeholder="Digite sua mensagem" />
+    <div id="chat-container">
+      <!-- Barra lateral de contatos -->
+      <div id="contacts-bar">
+        <header>Contatos</header>
+        <div class="contact-item">
+          <img src="assets/images/marcos.jpg" alt="Contato 1" />
+          <span>Marcos</span>
+        </div>
+        <div class="contact-item">
+          <img src="assets/images/marcos.jpg" alt="Contato 2" />
+          <span>João</span>
+        </div>
+        <div class="contact-item">
+          <img src="assets/images/marcos.jpg" alt="Contato 3" />
+          <span>Luana</span>
+        </div>
+        <!-- Adicione mais contatos conforme necessário -->
+      </div>
+
+      <!-- Área de mensagens -->
+      <div id="messages">
+    </div>
+
+    <!-- Campo para digitar a mensagem -->
+    <div id="messageInputContainer">
+      <input
+        type="text"
+        id="messageInput"
+        placeholder="Digite sua mensagem..."
+      />
       <button onclick="sendMessage()">Enviar</button>
     </div>
 
     <script>
-      const socket = io("https://chat-production-6582.up.railway.app");
+     const socket = io("https://chat-production-6582.up.railway.app");
 
-      socket.on("receiveMessage", (message) => {
-        const messageElement = document.createElement("p");
-        messageElement.textContent = message;
-        document.getElementById("messages").appendChild(messageElement);
-      });
+socket.on("receiveMessage", (message) => {
+  const messageElement = document.createElement("p");
 
-      function sendMessage() {
-        const message = document.getElementById("messageInput").value;
-        socket.emit("sendMessage", message);
-        document.getElementById("messageInput").value = "";
-      }
+  // Adiciona o prefixo para as mensagens enviadas pelo usuário
+  if (message.startsWith("Você: ")) {
+    messageElement.textContent = message;
+    messageElement.classList.add("my-message");
+  } else {
+    messageElement.textContent = message;
+    messageElement.classList.add("received-message");
+  }
+
+  document.getElementById("messages").appendChild(messageElement);
+});
+
+function sendMessage() {
+  const message = document.getElementById("messageInput").value;
+  
+  if (message.trim() !== "") {
+    // Adiciona o prefixo "Você: " antes de enviar
+    socket.emit("sendMessage", "Você: " + message);
+
+    // Exibe a mensagem localmente com o prefixo
+    const messageElement = document.createElement("p");
+    messageElement.textContent = "Você: " + message;
+    messageElement.classList.add("my-message");
+    document.getElementById("messages").appendChild(messageElement);
+
+    // Limpa o campo de input
+    document.getElementById("messageInput").value = "";
+  }
+}
+
+    
     </script>
   </body>
 </html>
