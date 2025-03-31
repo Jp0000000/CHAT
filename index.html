@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat - Grupo</title>
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
-    <link rel="stylesheet" href="/index.css">
-
-
+    <link rel="stylesheet" href="/index.css" />
   </head>
   <body>
     <div id="chat-container">
@@ -26,60 +24,59 @@
           <img src="assets/images/marcos.jpg" alt="Contato 3" />
           <span>Luana</span>
         </div>
-        <!-- Adicione mais contatos conforme necessário -->
       </div>
 
       <!-- Área de mensagens -->
-      <div id="messages">
+      <div id="messages"></div>
+
+      <!-- Campo para digitar a mensagem -->
+      <div id="messageInputContainer">
+        <input
+          type="text"
+          id="messageInput"
+          placeholder="Digite sua mensagem..."
+        />
+        <button onclick="sendMessage()">Enviar</button>
+      </div>
+
+      <script>
+        const socket = io("https://chat-production-6582.up.railway.app");
+
+        socket.on("receiveMessage", (message) => {
+          // Não exibir a mensagem se já foi exibida (verifica a mensagem no campo de input)
+          if (message !== document.getElementById("messageInput").value) {
+            const messageElement = document.createElement("p");
+
+            if (message.startsWith("Você: ")) {
+              messageElement.textContent = message;
+              messageElement.classList.add("my-message");
+            } else {
+              messageElement.textContent = message;
+              messageElement.classList.add("received-message");
+            }
+
+            document.getElementById("messages").appendChild(messageElement);
+          }
+        });
+
+        function sendMessage() {
+          const message = document.getElementById("messageInput").value;
+
+          if (message.trim() !== "") {
+            // Exibe a mensagem localmente com o prefixo antes de enviar
+            const messageElement = document.createElement("p");
+            messageElement.textContent = "Você: " + message;
+            messageElement.classList.add("my-message");
+            document.getElementById("messages").appendChild(messageElement);
+
+            // Envia a mensagem para o servidor
+            socket.emit("sendMessage", "Você: " + message);
+
+            // Limpa o campo de input
+            document.getElementById("messageInput").value = "";
+          }
+        }
+      </script>
     </div>
-
-    <!-- Campo para digitar a mensagem -->
-    <div id="messageInputContainer">
-      <input
-        type="text"
-        id="messageInput"
-        placeholder="Digite sua mensagem..."
-      />
-      <button onclick="sendMessage()">Enviar</button>
-    </div>
-
-    <script>
-     const socket = io("https://chat-production-6582.up.railway.app");
-    
-socket.on("receiveMessage", (message) => {
-  const messageElement = document.createElement("p");
-
-  // Adiciona o prefixo para as mensagens enviadas pelo usuário
-  if (message.startsWith("Você: ")) {
-    messageElement.textContent = message;
-    messageElement.classList.add("my-message");
-  } else {
-    messageElement.textContent = message;
-    messageElement.classList.add("received-message");
-  }
-
-  document.getElementById("messages").appendChild(messageElement);
-});
-
-function sendMessage() {
-  const message = document.getElementById("messageInput").value;
-  
-  if (message.trim() !== "") {
-    // Exibe a mensagem localmente com o prefixo antes de enviar
-    const messageElement = document.createElement("p");
-    messageElement.textContent = "Você: " + message;
-    messageElement.classList.add("my-message");
-    document.getElementById("messages").appendChild(messageElement);
-
-    // Envia a mensagem para o servidor (não irá duplicar)
-    socket.emit("sendMessage", "Você: " + message);
-
-    // Limpa o campo de input
-    document.getElementById("messageInput").value = "";
-  }
-}
-
- 
-    </script>
   </body>
 </html>
